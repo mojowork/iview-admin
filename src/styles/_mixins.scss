@@ -1,0 +1,13 @@
+@mixin fullScreenFluid($bg:$color-bg) {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    background-color: $bg;
+  }
+  
+  @mixin etchedText {
+    text-shadow: 0 2px white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #b8bec5;
+  }
