@@ -21,7 +21,7 @@
                     </div>
                 </Menu>
                 <!-- 已折叠 -->
-                <div style="text-align: center;" :key="index" v-for="(item, index) in $router.options.routes" v-if="fold">
+                <div style="text-align: center;" v-for="(item, index) in $router.options.routes" :key="index" v-if="fold">
                     <Dropdown transfer v-if="item.children&&item.children.length>0" placement="right-start" :key="index" @on-click="handleChangeMenu">
                         <Button style="width: 70px; padding: 10px 0;" type="text">
                             <Icon :size="20" :type="item.icon" color="white"></Icon>
@@ -41,6 +41,7 @@
                 <div class="header-fold" @click="handleToggle">
                     <Icon type="navicon-round" size="20"></Icon>
                 </div>
+                <!-- 个人中心 -->
                 <div class="header-profile">
                     <div class="profile-tools">
                         <div class="tools-item">
@@ -66,9 +67,11 @@
                     </Row>
                 </div>
             </header>
+            <!-- 内容区域 -->
             <section class="right-content">
                 <router-view/>
             </section>
+            
             <footer class="right-footer">
                 2018-2018 &copy; system by chaoshuai All rights reserved
             </footer>
@@ -116,13 +119,14 @@
 .main{
     @include fullScreen();
     display: flex;
+    flex-direction: row;
     .main-left{
-        width: 200px;
         flex: 0 200px;
+        width: 200px;
         background-color: $color-nav;
         &.left-fold{
-            width: 70px;
             flex: 0 70px;
+            width: 70px;
         }
         .left-brand{
             height: 4rem;
@@ -178,11 +182,12 @@
         .right-content{
             padding: 1rem;
             height: calc(100% - 6rem);
-            // overflow: hidden;
-            // overflow-y: scroll;
+            overflow-x: hidden;
+            overflow-y: scroll;
         }
         .right-footer{
             height: 2rem;
+            line-height: 2rem;
             text-align: center;
             @include etchedText();
         }

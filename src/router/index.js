@@ -4,11 +4,12 @@ import Router from 'vue-router'
 // 布局页面
 import Main from '@/views/Main'
 import NotFound from '@/views/404'
-// import Login from '@/views/Login'
-// import ServerErr from '@/views/500'
+import ServerErr from '@/views/500'
+import Login from '@/views/Login'
 
 // 业务页面
 import Test from 'pages/Test'
+import Dashboard from 'pages/Dashboard'
 
 
 Vue.use(Router)
@@ -17,8 +18,14 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/t',
+      redirect: '/dashboard',
       hidden: true
+    },
+    {
+      path: '/login',
+      name: 'login',
+      hidden: true,
+      component: Login
     },
     {
       path: '/',
@@ -27,7 +34,7 @@ export default new Router({
       icon: 'unlocked',
       component: Main,
       children: [
-        { path: '/dashborad', title: '数据概览', name: 'dashborad',component: Test },
+        { path: '/dashboard', title: '数据概览', name: 'dashboard',component: Dashboard },
       ]
     },
     {
@@ -50,6 +57,12 @@ export default new Router({
       children: [
         { path: '/t', name: 't',  title: '测试页面',component: Test, }
       ]
+    },
+    {
+      path: '/500',
+      name: 'servererr',
+      hidden: true,
+      component: ServerErr
     },
     {
       path: '*',
