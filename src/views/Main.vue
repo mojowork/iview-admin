@@ -3,65 +3,56 @@
         <!-- 侧边栏 -->
         <aside class="main-left" :class="{'left-fold': fold}">
             <div class="left-brand">
-                <img src="../assets/logo.png" alt="">
-                <span class="brand-title" v-if="!fold">微信CRM系统</span>
+                <img src="../assets/logo.png" alt="logo">
+                <span class="brand-title" v-if="!fold">{{adminName}}</span>
             </div>
             <div class="left-nav">
-                <Menu theme="dark" :open-names="['1']" accordion style="width: 100%;">
-                    <Submenu name="1">
-                        <template slot="title">
-                            <Icon type="ios-paper"></Icon>
-                            内容管理
-                        </template>
-                        <MenuItem name="1-1">文章管理</MenuItem>
-                        <MenuItem name="1-2">评论管理</MenuItem>
-                        <MenuItem name="1-3">举报管理</MenuItem>
-                    </Submenu>
-                    <Submenu name="2">
-                        <template slot="title">
-                            <Icon type="ios-people"></Icon>
-                            用户管理
-                        </template>
-                        <MenuItem name="2-1">新增用户</MenuItem>
-                        <MenuItem name="2-2">活跃用户</MenuItem>
-                    </Submenu>
-                    <Submenu name="3">
-                        <template slot="title">
-                            <Icon type="stats-bars"></Icon>
-                            统计分析
-                        </template>
-                        <MenuGroup title="使用">
-                            <MenuItem name="3-1">新增和启动</MenuItem>
-                            <MenuItem name="3-2">活跃分析</MenuItem>
-                            <MenuItem name="3-3">时段分析</MenuItem>
-                        </MenuGroup>
-                        <MenuGroup title="留存">
-                            <MenuItem name="3-4">用户留存</MenuItem>
-                            <MenuItem name="3-5">流失用户</MenuItem>
-                        </MenuGroup>
-                    </Submenu>
+                <!-- 未折叠 -->
+                <Menu theme="dark" :open-names="[$route.name]" accordion width="auto" :active-name="$route.name" @on-select="handleChangeMenu" v-if="!fold">
+                    <div class="warrper" v-for="(item, index) in $router.options.routes" v-if="!item.hidden"  :key="index">
+                        <Submenu :name="item.name" v-if="item.children&&item.children.length>0">
+                            <template slot="title">
+                                <Icon :type="item.icon" :size="16"></Icon>{{item.title}}
+                            </template>
+                            <MenuItem :name="child.name" v-if="!child.hidden" v-for="(child,i) in item.children" :key="i">{{child.title}}</MenuItem>
+                        </Submenu>
+                        <MenuItem :name="item.name" :key="i" v-else>{{child.title}}</MenuItem>
+
+                    </div>
                 </Menu>
+                <!-- 已折叠 -->
+                <div style="text-align: center;" :key="index" v-for="(item, index) in $router.options.routes" v-if="fold">
+                    <Dropdown transfer v-if="item.children&&item.children.length>0" placement="right-start" :key="index" @on-click="handleChangeMenu">
+                        <Button style="width: 70px; padding: 10px 0;" type="text">
+                            <Icon :size="20" :type="item.icon" color="white"></Icon>
+                        </Button>
+                        <DropdownMenu style="width: 200px;" slot="list" >
+                            <template v-for="(child, i) in item.children">
+                                <DropdownItem :name="child.name" :key="i" style="text-indent:1rem;">{{ child.title }}</DropdownItem>
+                            </template>
+                        </DropdownMenu>
+                    </Dropdown>
+                </div>
+                
             </div>
         </aside>
         <div class="main-right">
             <header class="right-header">
-                <div class="header-fold" @click="handleFold">
+                <div class="header-fold" @click="handleToggle">
                     <Icon type="navicon-round" size="20"></Icon>
                 </div>
                 <div class="header-profile">
                     <div class="profile-tools">
                         <div class="tools-item">
-                            <Icon type="unlocked" size="20"></Icon>
-                        </div>
-                        <div class="tools-item">
-                            <Icon type="power" size="20"></Icon>
-                        </div>
-                        <div class="tools-item">
-                            <Icon type="android-cloud"  size="20"></Icon>
+                            <Tooltip :content="messageCount > 0 ? '有' + messageCount + '条未读消息' : '无未读消息'" placement="bottom">
+                                <Badge :count="messageCount" dot>
+                                    <Icon type="ios-bell" :size="22"></Icon>
+                                </Badge>
+                            </Tooltip>
                         </div>
                     </div>
                     <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
-                        <Dropdown transfer trigger="click" @on-click="handleClickUserDropdown">
+                        <Dropdown transfer trigger="click">
                             <a href="javascript:void(0)" style="color:#333;">
                                 <span class="main-user-name">{{ userName }}</span>
                                 <Icon type="arrow-down-b"></Icon>
@@ -93,16 +84,23 @@
             return {
                 avatorPath: "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg",
                 userName: 'chaoshuai',
+                adminName: '微信CRM',
+                messageCount: 4,
                 fold: false
             }
         },
+        mounted() {
+            console.log(this.$router)
+        },
         methods: {
-            handleFold() {
+            handleToggle() {
                 this.fold = !this.fold
-                console.log('handleFold',  this.fold)
             },
-            handleClickUserDropdown() {
-
+            handlePageGoto(name) {
+                this.$router.push({ name })
+            },
+            handleChangeMenu(name) {
+                this.$router.push({ name })
             }
         },
         
@@ -129,12 +127,12 @@
         .left-brand{
             height: 4rem;
             padding: 1rem 0;
+            text-align: center;
             img {
                 max-height: 100%;
                 display: inline-block;
                 vertical-align: bottom;;
                 width: auto;
-                margin-left:1rem;
             }
             .brand-title{
                 color: #fff;
@@ -161,12 +159,12 @@
                 justify-content: flex-end;
                 height: 2rem;
                 line-height: 2rem;
-                height: 2rem;
                 .profile-tools{
-                    flex: 0 130px;
+                    flex: 0 4rem;
                     .tools-item{
                         display: inline-block;
                         width: 2rem;
+                        cursor: pointer;
                     }
                 }
                 .main-user-name {

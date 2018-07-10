@@ -17,21 +17,44 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/t'
+      redirect: '/t',
+      hidden: true
     },
     {
       path: '/',
-      name: '测试',
+      title: '数据概览',
+      name: 'data',
+      icon: 'unlocked',
       component: Main,
       children: [
-        {
-          path: '/t', name: 't', component: Test,
-        }
+        { path: '/dashborad', title: '数据概览', name: 'dashborad',component: Test },
+      ]
+    },
+    {
+      path: '/',
+      title: '系统设置',
+      name: 'setting',
+      icon: 'ios-grid-view',
+      component: Main,
+      children: [
+        { path: '/table', title: '可拖拽排序', name: 'dragable-table',component: Test },
+        { path: '/image', title: '可缩放图片', name: 'dragable-image', component: Test },
+      ]
+    },
+    {
+      path: '/',
+      title: '标签管理',
+      name: 'tag',
+      icon: 'ios-grid-view',
+      component: Main,
+      children: [
+        { path: '/t', name: 't',  title: '测试页面',component: Test, }
       ]
     },
     {
       path: '*',
       name: 'notfound',
+      hidden: true,
       component: NotFound
     }
   ]
