@@ -3,7 +3,7 @@
         <!-- 侧边栏 -->
         <aside class="main-left" :class="{'left-fold': fold}">
             <div class="left-brand">
-                <img src="../assets/logo.png" alt="logo">
+                <img src="../assets/logo-min.jpg" alt="logo">
                 <span class="brand-title" v-if="!fold">{{adminName}}</span>
             </div>
             <div class="left-nav">
@@ -36,11 +36,11 @@
                 
             </div>
         </aside>
-        <div class="main-right">
+        <div class="main-right" :class="{'right-fold': fold}">
             <header class="right-header">
-                <div class="header-fold" @click="handleToggle">
-                    <Icon type="navicon-round" size="20"></Icon>
-                </div>
+                <Button class="header-fold" type="text" @click="handleToggle">
+                    <Icon type="navicon-round" :size="24" color="#333"></Icon>
+                </Button>
                 <!-- 个人中心 -->
                 <div class="header-profile">
                     <div class="profile-tools">
@@ -69,6 +69,7 @@
             </header>
             <!-- 内容区域 -->
             <section class="right-content">
+                
                 <router-view/>
             </section>
             
@@ -119,14 +120,13 @@
 .main{
     @include fullScreen();
     display: flex;
-    flex-direction: row;
     .main-left{
         flex: 0 200px;
-        width: 200px;
+        min-width: 200px;
         background-color: $color-nav;
         &.left-fold{
             flex: 0 70px;
-            width: 70px;
+            min-width: 70px;
         }
         .left-brand{
             height: 4rem;
@@ -147,6 +147,10 @@
     }
     .main-right{
         flex: 1;
+        max-width: calc(100% - 200px);
+        &.right-fold{
+           max-width: calc(100% - 70px)
+        }
         .right-header{
             padding: 1rem 0;
             height: 4rem;
@@ -155,7 +159,7 @@
                 height: 2rem;
                 line-height: 2rem;
                 float: left;
-                margin: 0 1rem;
+                margin: 0 .75rem;
                 cursor: pointer;
             }
             .header-profile{
