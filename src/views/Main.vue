@@ -1,14 +1,14 @@
 <template>
     <div class="main">
         <!-- 侧边栏 -->
-        <aside class="main-left" :class="{'left-fold': fold}">
+        <aside class="main-left" :class="{'left-collapsed': collapsed}">
             <div class="left-brand">
                 <img src="../assets/logo-min.jpg" alt="logo">
-                <span class="brand-title" v-if="!fold">{{adminName}}</span>
+                <span class="brand-title" v-if="!collapsed">{{adminName}}</span>
             </div>
             <div class="left-nav">
                 <!-- 未折叠 -->
-                <Menu theme="dark" :open-names="[$route.name]" accordion width="auto" :active-name="$route.name" @on-select="handleChangeMenu" v-if="!fold">
+                <Menu theme="light" :open-names="[$route.name]" accordion width="auto" :active-name="$route.name" @on-select="handleChangeMenu" v-if="!collapsed">
                     <div class="warrper" v-for="(item, index) in $router.options.routes" v-if="!item.hidden"  :key="index">
                         <Submenu :name="item.name" v-if="item.children&&item.children.length>0">
                             <template slot="title">
@@ -21,10 +21,10 @@
                     </div>
                 </Menu>
                 <!-- 已折叠 -->
-                <div style="text-align: center;" v-for="(item, index) in $router.options.routes" :key="index" v-if="fold">
+                <div style="text-align: center;" v-for="(item, index) in $router.options.routes" :key="index" v-if="collapsed">
                     <Dropdown transfer v-if="item.children&&item.children.length>0" placement="right-start" :key="index" @on-click="handleChangeMenu">
                         <Button style="width: 70px; padding: 10px 0;" type="text">
-                            <Icon :size="20" :type="item.icon" color="white"></Icon>
+                            <Icon :size="20" :type="item.icon"></Icon>
                         </Button>
                         <DropdownMenu style="width: 200px;" slot="list" >
                             <template v-for="(child, i) in item.children">
@@ -36,11 +36,17 @@
                 
             </div>
         </aside>
-        <div class="main-right" :class="{'right-fold': fold}">
+        <div class="main-right" :class="{'right-collapsed': collapsed}">
             <header class="right-header">
-                <Button class="header-fold" type="text" @click="handleToggle">
+                <!-- 折叠按钮 -->
+                <Button class="header-collapsed" type="text" @click="handleToggle">
                     <Icon type="navicon-round" :size="24" color="#333"></Icon>
                 </Button>
+                <!-- 面包屑 -->
+                <Breadcrumb class="header-breadcrumb">
+                        <BreadcrumbItem to="/"><strong>home</strong></BreadcrumbItem>
+                        <BreadcrumbItem :to="item.path" v-for="item in $route.matched" :key="item.name">{{ item.name }}</BreadcrumbItem>
+                </Breadcrumb>
                 <!-- 个人中心 -->
                 <div class="header-profile">
                     <div class="profile-tools">
@@ -90,7 +96,7 @@
                 userName: 'chaoshuai',
                 adminName: '微信CRM',
                 messageCount: 4,
-                fold: false
+                collapsed: false
             }
         },
         mounted() {
@@ -98,7 +104,7 @@
         },
         methods: {
             handleToggle() {
-                this.fold = !this.fold
+                this.collapsed = !this.collapsed
             },
             handlePageGoto(name) {
                 this.$router.push({ name })
@@ -123,8 +129,8 @@
     .main-left{
         flex: 0 200px;
         min-width: 200px;
-        background-color: $color-nav;
-        &.left-fold{
+        background-color: #fff;
+        &.left-collapsed{
             flex: 0 70px;
             min-width: 70px;
         }
@@ -132,6 +138,7 @@
             height: 4rem;
             padding: 1rem 0;
             text-align: center;
+            @extend %bg-border-styles;
             img {
                 max-height: 100%;
                 display: inline-block;
@@ -139,7 +146,6 @@
                 width: auto;
             }
             .brand-title{
-                color: #fff;
                 font-size: 1.25rem;
                 font-size: 600;
             }
@@ -148,18 +154,26 @@
     .main-right{
         flex: 1;
         max-width: calc(100% - 200px);
-        &.right-fold{
+        &.right-collapsed{
            max-width: calc(100% - 70px)
         }
         .right-header{
             padding: 1rem 0;
             height: 4rem;
             @extend %bg-border-styles;
-            .header-fold{
+            .header-collapsed{
+                float: left;
+                width: 3rem;
+                height: 100%;
+                line-height: 100%;
+                margin: 0 .75rem;
+                padding: 0;
+                cursor: pointer;
+            }
+            .header-breadcrumb{
+                float: left;
                 height: 2rem;
                 line-height: 2rem;
-                float: left;
-                margin: 0 .75rem;
                 cursor: pointer;
             }
             .header-profile{
