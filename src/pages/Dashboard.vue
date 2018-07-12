@@ -38,7 +38,7 @@
             </Col>
         </Row>
         <div class="das-charts">
-            <div id="charts" style="width: 100%;height:400px;"></div>
+            <div id="charts" style="max-width: 100%;height:400px;"></div>
         </div>
         <div class="das-table">
             <Table border :columns="columns7" :data="tabledata"></Table>

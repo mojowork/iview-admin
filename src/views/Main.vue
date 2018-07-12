@@ -9,7 +9,7 @@
             <div class="left-nav">
                 <!-- 未折叠 -->
                 <Menu theme="light" :open-names="[$route.name]" accordion width="auto" :active-name="$route.name" @on-select="handleChangeMenu" v-if="!collapsed">
-                    <div class="warrper" v-for="(item, index) in $router.options.routes" v-if="!item.hidden"  :key="index">
+                    <div class="warrper" v-for="(item, index) in $router.options.routes" v-if="!item.hidden" :key="index">
                         <Submenu :name="item.name" v-if="item.children&&item.children.length>0">
                             <template slot="title">
                                 <Icon :type="item.icon" :size="16"></Icon>{{item.title}}
@@ -26,14 +26,14 @@
                         <Button style="width: 70px; padding: 10px 0;" type="text">
                             <Icon :size="20" :type="item.icon"></Icon>
                         </Button>
-                        <DropdownMenu style="width: 200px;" slot="list" >
+                        <DropdownMenu style="width: 200px;" slot="list">
                             <template v-for="(child, i) in item.children">
                                 <DropdownItem :name="child.name" :key="i" style="text-indent:1rem;">{{ child.title }}</DropdownItem>
                             </template>
                         </DropdownMenu>
                     </Dropdown>
                 </div>
-                
+
             </div>
         </aside>
         <div class="main-right" :class="{'right-collapsed': collapsed}">
@@ -44,8 +44,10 @@
                 </Button>
                 <!-- 面包屑 -->
                 <Breadcrumb class="header-breadcrumb">
-                        <BreadcrumbItem to="/"><strong>home</strong></BreadcrumbItem>
-                        <BreadcrumbItem :to="item.path" v-for="item in $route.matched" :key="item.name">{{ item.name }}</BreadcrumbItem>
+                    <BreadcrumbItem to="/">
+                        <strong>home</strong>
+                    </BreadcrumbItem>
+                    <BreadcrumbItem :to="item.path" v-for="item in $route.matched" :key="item.name">{{ item.name }}</BreadcrumbItem>
                 </Breadcrumb>
                 <!-- 个人中心 -->
                 <div class="header-profile">
@@ -66,7 +68,7 @@
                             </a>
                             <DropdownMenu slot="list">
                                 <DropdownItem name="ownSpace" @click.native="handlePageGoto('profile')">个人中心</DropdownItem>
-                                <DropdownItem name="loginout" divided @click.native="handlePageGoto('login')">退出登录</DropdownItem>
+                                <DropdownItem name="loginout" divided @click.native="handlePageGoto('logout')">退出登录</DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
                         <Avatar :src="avatorPath" class="user-avatar"></Avatar>
@@ -75,66 +77,73 @@
             </header>
             <!-- 内容区域 -->
             <section class="right-content">
-                
+
                 <router-view/>
             </section>
-            
+
             <footer class="right-footer">
                 2018-2018 &copy; system by chaoshuai All rights reserved
             </footer>
-            
+
         </div>
     </div>
 </template>
 
 <script>
-    export default {
-        name: 'Main',
-        data() {
-            return {
-                avatorPath: "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg",
-                userName: 'chaoshuai',
-                adminName: '微信CRM',
-                messageCount: 4,
-                collapsed: false
+import Cookies from 'js-cookie'
+export default {
+    name: "Main",
+    data() {
+        return {
+            avatorPath:
+                "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg",
+            userName: "chaoshuai",
+            adminName: "微信CRM",
+            messageCount: 4,
+            collapsed: false
+        };
+    },
+    mounted() {
+        this.userName = Cookies.get('username')
+    },
+    methods: {
+        handleToggle() {
+            this.collapsed = !this.collapsed;
+        },
+        handlePageGoto(name) {
+            if (name === "logout") {
+                Cookies.remove('token')
+                Cookies.remove('username')
+                this.$router.push({ name: 'login' });
+            } else {
+                this.$router.push({ name });
             }
         },
-        mounted() {
-            console.log(this.$router)
-        },
-        methods: {
-            handleToggle() {
-                this.collapsed = !this.collapsed
-            },
-            handlePageGoto(name) {
-                this.$router.push({ name })
-            },
-            handleChangeMenu(name) {
-                this.$router.push({ name })
-            }
-        },
-        
+        handleChangeMenu(name) {
+            this.$router.push({ name });
+        }
     }
+};
 </script>
 
 <style scoped lang="scss">
-@import '~styles/index.scss';
+@import "~styles/index.scss";
 %bg-border-styles {
     background-color: white;
     border-bottom: 1px solid $color-border;
 }
-.main{
+.main {
     @include fullScreen();
     display: flex;
-    .main-left{
+    .main-left {
         flex: 0 200px;
         min-width: 200px;
         background-color: #fff;
-        &.left-collapsed{
+        &.left-collapsed {
             flex: 0 70px;
             min-width: 70px;
         }
-        .left-brand{
+        .left-brand {
             height: 4rem;
             padding: 1rem 0;
             text-align: center;
@@ -142,48 +151,48 @@
             img {
                 max-height: 100%;
                 display: inline-block;
-                vertical-align: bottom;;
+                vertical-align: bottom;
                 width: auto;
             }
-            .brand-title{
+            .brand-title {
                 font-size: 1.25rem;
                 font-size: 600;
             }
         }
     }
-    .main-right{
+    .main-right {
         flex: 1;
         max-width: calc(100% - 200px);
-        &.right-collapsed{
-           max-width: calc(100% - 70px)
+        &.right-collapsed {
+            max-width: calc(100% - 70px);
         }
-        .right-header{
+        .right-header {
             padding: 1rem 0;
             height: 4rem;
             @extend %bg-border-styles;
-            .header-collapsed{
+            .header-collapsed {
                 float: left;
                 width: 3rem;
                 height: 100%;
                 line-height: 100%;
-                margin: 0 .75rem;
+                margin: 0 0.75rem;
                 padding: 0;
                 cursor: pointer;
             }
-            .header-breadcrumb{
+            .header-breadcrumb {
                 float: left;
                 height: 2rem;
                 line-height: 2rem;
                 cursor: pointer;
             }
-            .header-profile{
+            .header-profile {
                 display: flex;
                 justify-content: flex-end;
                 height: 2rem;
                 line-height: 2rem;
-                .profile-tools{
+                .profile-tools {
                     flex: 0 4rem;
-                    .tools-item{
+                    .tools-item {
                         display: inline-block;
                         width: 2rem;
                         cursor: pointer;
@@ -197,13 +206,13 @@
                 }
             }
         }
-        .right-content{
+        .right-content {
             padding: 1rem;
             height: calc(100% - 6rem);
             overflow-x: hidden;
             overflow-y: scroll;
         }
-        .right-footer{
+        .right-footer {
             height: 2rem;
             line-height: 2rem;
             text-align: center;
