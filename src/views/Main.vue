@@ -12,11 +12,11 @@
                     <div class="warrper" v-for="(item, index) in $router.options.routes" v-if="!item.hidden" :key="index">
                         <Submenu :name="item.name" v-if="item.children&&item.children.length>0">
                             <template slot="title">
-                                <Icon :type="item.icon" :size="16"></Icon>{{item.title}}
+                                <Icon :type="item.icon" :size="16"></Icon>{{item.meta&&item.meta.title}}
                             </template>
-                            <MenuItem :name="child.name" v-if="!child.hidden" v-for="(child,i) in item.children" :key="i">{{child.title}}</MenuItem>
+                            <MenuItem :name="child.name" v-if="!child.hidden" v-for="(child, i) in item.children" :key="i">{{child.meta&&child.meta.title}}</MenuItem>
                         </Submenu>
-                        <MenuItem :name="item.name" :key="i" v-else>{{child.title}}</MenuItem>
+                        <MenuItem :name="item.name" :key="i" v-else>{{child.meta&&child.meta.title}}</MenuItem>
 
                     </div>
                 </Menu>
@@ -28,7 +28,7 @@
                         </Button>
                         <DropdownMenu style="width: 200px;" slot="list">
                             <template v-for="(child, i) in item.children">
-                                <DropdownItem :name="child.name" :key="i" style="text-indent:1rem;">{{ child.title }}</DropdownItem>
+                                <DropdownItem :name="child.name" :key="i" style="text-indent:1rem;">{{ child.meta&&child.meta.title }}</DropdownItem>
                             </template>
                         </DropdownMenu>
                     </Dropdown>
@@ -44,10 +44,8 @@
                 </Button>
                 <!-- 面包屑 -->
                 <Breadcrumb class="header-breadcrumb">
-                    <BreadcrumbItem to="/">
-                        <strong>home</strong>
-                    </BreadcrumbItem>
-                    <BreadcrumbItem :to="item.path" v-for="item in $route.matched" :key="item.name">{{ item.name }}</BreadcrumbItem>
+                    <BreadcrumbItem to="/">首页</BreadcrumbItem>
+                    <BreadcrumbItem :to="item.path" v-for="item in $route.matched" :key="item.name">{{ item.meta&&item.meta.title }}</BreadcrumbItem>
                 </Breadcrumb>
                 <!-- 个人中心 -->
                 <div class="header-profile">
@@ -104,6 +102,7 @@ export default {
         };
     },
     mounted() {
+        console.log('$route.matched',this.$route.matched)
         this.userName = Cookies.get('username')
     },
     methods: {

@@ -222,6 +222,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.page-title{
+    font-size: 1.25rem;
+    margin: 1rem 0;
+}
 .das-charts{
     margin: 2rem auto;
 }

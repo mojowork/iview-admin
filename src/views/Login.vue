@@ -23,25 +23,30 @@
         data() {
             return {
                 loginForm: {
-                    username: '',
-                    password: '',
+                    username: 'admin',
+                    password: '123123',
                 },
                 ruleLogin: {}
             }
         },
         methods: {
             handleSubmit() {
-                this.$http('/admin/user/login', {
-                        mobile: this.loginForm.username,
-                        password: this.loginForm.password
-                    })
-                    .then(res => {
-                        Cookies.set('token', res.token)
-                        Cookies.set('username', this.loginForm.username)
-                        this.$router.push({
-                            path: '/'
-                        })
-                    })
+                // this.$http('/admin/user/login', {
+                //         mobile: this.loginForm.username,
+                //         password: this.loginForm.password
+                //     })
+                //     .then(res => {
+                //         Cookies.set('token', res.token)
+                //         Cookies.set('username', this.loginForm.username)
+                //         this.$router.push({
+                //             path: '/'
+                //         })
+                //     })
+                Cookies.set('token', 'token123')
+                Cookies.set('username', this.loginForm.username)
+                this.$router.push({
+                    path: '/'
+                })
             }
         },
         
@@ -61,13 +66,11 @@
         height: 264px;
         padding: 2rem;
         background-color: #fff;
-        border-bottom: 1px solid $color-border;
+        border: 1px solid $color-border;
         border-radius: .25rem;
         h3{ 
             text-align: center;
             font-size: 1rem;
-            font-weight: 500;
-            color: rgb(73, 80, 87);
             margin-bottom: 20px;
         }
     }

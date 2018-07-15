@@ -7,11 +7,6 @@ import NotFound from '@/views/404'
 import ServerErr from '@/views/500'
 import Login from '@/views/Login'
 
-// 业务页面
-import Test from 'pages/Test'
-import Dashboard from 'pages/Dashboard'
-
-
 Vue.use(Router)
 
 export default new Router({
@@ -24,38 +19,39 @@ export default new Router({
     {
       path: '/login',
       name: 'login',
+      meta: { title: '登录' },
       hidden: true,
       component: Login
     },
     {
       path: '/',
-      title: '数据概览',
+      meta: { title: '数据概览' },
       name: 'data',
-      icon: 'unlocked',
+      icon: 'stats-bars',
       component: Main,
       children: [
-        { path: '/dashboard', title: '数据概览', name: 'dashboard',component: Dashboard },
+        { path: '/dashboard', meta: { title: '仪表盘', }, name: 'dashboard', component: () => import('pages/Dashboard') },
       ]
     },
     {
       path: '/',
-      title: '系统设置',
-      name: 'setting',
-      icon: 'ios-grid-view',
-      component: Main,
-      children: [
-        { path: '/table', title: '可拖拽排序', name: 'dragable-table',component: Test },
-        { path: '/image', title: '可缩放图片', name: 'dragable-image', component: Test },
-      ]
-    },
-    {
-      path: '/',
-      title: '标签管理',
+      meta: { title: '标签管理' },
       name: 'tag',
-      icon: 'ios-grid-view',
+      icon: 'pricetags',
       component: Main,
       children: [
-        { path: '/t', name: 't',  title: '测试页面',component: Test, }
+        { path: '/table', meta: { title: '可编辑表格', }, name: 'dragable-table', component: () => import('pages/Table') },
+        { path: '/t', meta: { title: '测试页面', }, name: 't', component: () => import('pages/Test') }
+      ]
+    },
+    {
+      path: '/',
+      meta: { title: '系统设置' },
+      name: 'settings',
+      icon: 'settings',
+      component: Main,
+      children: [
+        { path: '/image', meta: { title: '可缩放图片', }, name: 'dragable-image', component: () => import('pages/Test') },
       ]
     },
     {
